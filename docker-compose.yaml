@@ -1,0 +1,27 @@
+version: '3.3'
+
+services: 
+  mysql: 
+    image: mysql:5.7
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - "4306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Abc12345
+      MYSQL_DATABASE: db_admin_files
+      MYSQL_USER: db_admin_files_user
+      MYSQL_PASSWORD: Abc12345
+
+  web:
+    image: php:7.3-apache
+    ports:
+      - "8080:80"
+    restart: always
+    volumes:
+      - ./src:/var/www/html
+      - ./apache-config:/etc/apache2/sites-available
+    links:
+      - mysql:mysql
+    command: bash -c "a2enmod rewrite && apache2-foreground"
